@@ -1,3 +1,5 @@
+const {dogRouter} = require('./routes/dogs');
+
 const express = require('express');
 require('express-async-errors');
 
@@ -17,6 +19,8 @@ const logger = (req, res, next) => {
 
 //Put the very top so any method or route will be using logger middleware function
 app.use(logger);
+
+app.use('/dogs', dogRouter);
 
 // For testing purposes, GET /
 app.get('/', (req, res) => {

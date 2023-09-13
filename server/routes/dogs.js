@@ -1,4 +1,7 @@
-// ------------------------------  SERVER DATA ------------------------------  
+const express = require('express');
+const dogRouter = express.Router();
+
+// ------------------------------  SERVER DATA ------------------------------
 
 let nextDogId = 1;
 function getNewDogId() {
@@ -18,7 +21,7 @@ const dogs = [
   }
 ];
 
-// ------------------------------  MIDDLEWARES ------------------------------ 
+// ------------------------------  MIDDLEWARES ------------------------------
 
 const validateDogInfo = (req, res, next) => {
   if (!req.body || !req.body.name) {
@@ -40,8 +43,7 @@ const validateDogId = (req, res, next) => {
   next();
 }
 
-// ------------------------------  ROUTE HANDLERS ------------------------------  
-
+// ------------------------------  ROUTE HANDLERS ------------------------------
 // GET /dogs
 const getAllDogs = (req, res) => {
   res.json(dogs);
@@ -82,6 +84,13 @@ const deleteDog = (req, res) => {
   res.json({ message: "success" });
 };
 
-// ------------------------------  ROUTER ------------------------------  
+// ------------------------------  ROUTER ------------------------------
+// in app.js
+// app.use('/dogs', dogRouter);
+dogRouter.get('/:dogId', validateDogId, getDogById);
+dogRouter.get('/', getAllDogs);
+dogRouter.post('/', validateDogInfo, createDog);
+dogRouter.put('/:dogId', validateDogId, validateDogInfo, updateDog);
+dogRouter.delete('/:dogId', validateDogId, deleteDog);
 
-// Your code here
+module.exports = {dogRouter};
