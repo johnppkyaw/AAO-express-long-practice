@@ -1,5 +1,6 @@
 const express = require('express');
 const dogRouter = express.Router();
+const { foodsRouter } = require('./dog-foods');
 
 // ------------------------------  SERVER DATA ------------------------------
 
@@ -87,6 +88,7 @@ const deleteDog = (req, res) => {
 // ------------------------------  ROUTER ------------------------------
 // in app.js
 // app.use('/dogs', dogRouter);
+dogRouter.use('/:dogId/foods', validateDogId, foodsRouter);
 dogRouter.get('/:dogId', validateDogId, getDogById);
 dogRouter.get('/', getAllDogs);
 dogRouter.post('/', validateDogInfo, createDog);
