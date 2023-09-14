@@ -3,6 +3,8 @@ const {dogRouter} = require('./routes/dogs');
 const express = require('express');
 require('express-async-errors');
 
+console.log('environment variable is: ', process.env.NODE_ENV)
+
 const app = express();
 app.use('/static', express.static('assets'));
 app.use(express.json());
@@ -42,13 +44,25 @@ app.get('/test-error', async (req, res) => {
 });
 
 //Resource Not Found middleware
-const notFound = (req, res) => {
+const notFound = (req, res, next) => {
   const error = new Error("The requested resource couldn't be found.");
   error.statusCode = 404;
-  throw error;
+  next(error);
 }
 
 app.use(notFound);
+
+//Phase 4 error handling middleware
+const wentWrong = (err, req, res, next) => {
+  console.log(err.message || "Something went wrong");
+  res.status(err.statusCode || 500);
+  res.json({
+    "message": err.message || "Something went wrong",
+    "statusCode": err.statusCode || 500,
+    "stack": process.env.NODE_ENV !== "production" ? err.stack : undefined
+  })
+}
+app.use(wentWrong);
 
 const port = 5000;
 app.listen(port, () => console.log('Server is listening on port', port));
